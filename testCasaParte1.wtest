@@ -1,9 +1,39 @@
 import casa.*
+import cuentas.*
+
 
 describe "casa de pepe y julian" {
+  test "cuenta Corriente" {
+    casa.cambiarCuenta(cuentaCorriente)
+    cuentaCorriente.saldo(300)
+    assert.equals(300, cuentaCorriente.saldo())
+    casa.gastar(200)
+    assert.equals(100, cuentaCorriente.saldo())
+    assert.equals(200, casa.totalGastado())
+    casa.gastar(400)
+    assert.equals(-300, cuentaCorriente.saldo())
+    assert.equals(600, casa.totalGastado())
+    casa.cambiarMes()
+    assert.equals(0, casa.totalGastado())
+  }
 
+  test "cuenta con gastos: caso positivo" {
+    cuentaConGastos.costoOperacion(20)
+    cuentaConGastos.deposito(1000)
+    assert.equals(980, cuentaConGastos.saldo())
+    cuentaConGastos.extraer(580)
+    assert.equals(400, cuentaConGastos.saldo())
+    cuentaConGastos.extraer(500)
+    assert.equals(-100, cuentaConGastos.saldo())
+    cuentaConGastos.deposito(150)
+    assert.equals(30, cuentaConGastos.saldo())
+  }
   // Descomentar si hiciera falta un metodo para inicializar el ambiente
   // method initialize() {
   // }
-
+  test "cuenta con gastos: caso negativo" {
+    cuentaConGastos.costoOperacion(20)
+    assert.throwsException({cuentaConGastos.deposito(10)})
+    assert.equals(0, cuentaConGastos.saldo())
+  }
 }

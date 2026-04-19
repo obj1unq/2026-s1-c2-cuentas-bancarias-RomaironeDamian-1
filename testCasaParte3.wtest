@@ -1,0 +1,29 @@
+import casa.*
+import cuentas.*
+describe "viveres y reparaciones" {
+  test "30 de vivieres sin reparaciones y cuenta corriente con 2000" {
+    casa.cambiarCuenta(cuentaCorriente)
+    cuentaCorriente.saldo(2000)
+    assert.equals(2000, cuentaCorriente.saldo())
+    casa.porcentajeViveres(30)
+    assert.equals(30, casa.porcentajeViveres())
+    casa.registrarReparacion(1000)
+    assert.that(casa.reparacionesPendientes())
+    assert.notThat(casa.viveresSuficientes())
+    assert.notThat(casa.casaEnOrden())
+    assert.throwsException({casa.comprarViveres(80, 2)}) 
+    assert.equals(30, casa.porcentajeViveres())
+    assert.equals(2000, cuentaCorriente.saldo())
+    casa.comprarViveres(20, 2)
+    assert.that(casa.viveresSuficientes())
+    assert.equals(50, casa.porcentajeViveres())
+    assert.notThat(casa.casaEnOrden())
+    assert.equals(1960, cuentaCorriente.saldo())
+    assert.equals(40, casa.totalGastado())
+    casa.realizarReparaciones()
+    assert.notThat(casa.reparacionesPendientes())
+    assert.that(casa.casaEnOrden())
+    assert.equals(960, cuentaCorriente.saldo())
+    assert.equals(1040, casa.totalGastado())
+  }
+}
