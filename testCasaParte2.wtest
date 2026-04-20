@@ -1,0 +1,32 @@
+import casa.*
+import cuentas.*
+
+describe "cuenta combinada" {
+  test "saldo de cuenta combinada" {
+    cuentaCorriente.saldo(-50)
+    cuentaConGastos.saldo(-50)
+    assert.equals(0, cuentaCombinada.saldo())
+  }
+
+  test "realizar gastos en cuenta combinada" {
+    casa.cambiarCuenta(cuentaCombinada)
+    cuentaCombinada.cuentaPrimaria(cuentaConGastos)
+    cuentaConGastos.costoOperacion(20)
+    cuentaConGastos.saldo(0)
+    cuentaCombinada.cuentaSecundaria(cuentaCorriente)
+    cuentaCorriente.saldo(300)
+    cuentaCombinada.deposito(100)
+    assert.equals(380, cuentaCombinada.saldo())
+    assert.equals(80, cuentaConGastos.saldo())
+    casa.gastar(280)
+    assert.equals(280, casa.totalGastado())
+    assert.equals(100, cuentaCombinada.saldo())
+    assert.equals(0, cuentaConGastos.saldo())
+    assert.equals(100, cuentaCorriente.saldo())
+    assert.throwsException({cuentaCombinada.deposito(10)})
+    assert.equals(100, cuentaCorriente.saldo())
+    assert.throwsException({casa.gastar(1000)})
+    assert.equals(100, cuentaCorriente.saldo())
+    assert.equals(280, casa.totalGastado())
+  }
+}
